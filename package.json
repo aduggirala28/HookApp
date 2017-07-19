@@ -1,0 +1,22 @@
+{
+  "name": "restful",
+  "version": "0.0.0",
+  "private": true,
+  "main": "server.js",
+  "scripts":{
+    "test":"echo \"Error: no test specified\" && exit 1",
+    "start":"node server"
+  },
+  "dependencies": {
+    "body-parser": "~1.8.1",
+    "express": "latest",
+    "mongoose": "^4.10.8",
+    "node-restful": "latest",
+    "nodemon": "latest",
+    "cors":"^2.8.3",
+    "bcryptjs":"*",
+    "jsonwebtoken":"*",
+    "passport":"*",
+    "passport-jwt":"*"
+  }
+}
