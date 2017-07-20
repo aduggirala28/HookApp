@@ -1,0 +1,61 @@
+<h2 class="page-header">List all your events here!!</h2>
+<form (submit)="addHeader()">
+  <fieldset>
+ <div class="form-group">
+      <!-- <label for="addheader" class="col-lg-2 control-label">Enter Headers</label> -->
+      <legend>Enter Headers</legend>
+      <div class="col-lg-10">
+        <input type="text" [(ngModel)]="head" name="head" class="form-control" id="addheader" placeholder="Add Header">
+        <br><br>
+        <input type="submit" class="btn btn-primary" value="Add Header">
+      </div>
+    </div>
+    </fieldset>
+</form>
+<br><br><br>
+<form (submit)="onEventSubmit()">
+  <fieldset>
+  <legend>Event Entry</legend>
+  <div class="form-group">
+      <label for="header" class="col-lg-2 control-label">Header</label>
+      <div class="col-lg-10">
+        <select [(ngModel)]="headerkey" name='headerkey' class="form-control" id="select">
+          <option *ngFor="let i of head0" [value]='i'> {{i}}
+          </option>
+        </select>
+      </div>
+  </div>
+  <br><br>
+  <div class="form-group">
+      <label for="textArea" class="col-lg-2 control-label">Event Description</label>
+      <div class="col-lg-10">
+        <textarea [(ngModel)]="event" name='event' class="form-control" rows="3" id="event"></textarea>
+        <br><span>To add another event press 'Add another Event'</span>
+      </div>
+    </div>
+  <div class="form-group">
+  <input ng-click="addAnother()" class="btn" value="Add another event"> 
+</div>
+  <input type="submit" class="btn btn-primary" value="Submit">
+ 
+  </fieldset>
+</form>
+<br><br>
+<table class="table table-striped table-hover">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Event Header</th>
+      <th>Event Description</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody *ngFor="let event of eventList; let i=index">
+    <tr>
+      <td>{{i+1}}</td>
+      <td>{{event.headerkey}}</td>
+      <td>{{event.event}}</td>
+      <th><button (click)="deleteEvent(i,event._id)">delete</button></th>
+    </tr>
+  </tbody> 
+</table> 
