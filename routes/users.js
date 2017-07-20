@@ -75,9 +75,21 @@ res.json({user : req.user});
 router.get('/eventlister', passport.authenticate('jwt',{session:false}),function(req,res,next){
 const query_userkey=req.query.username;
 const query_headerkey=req.query.headerkey;
-console.log("The query_key is "+query_userkey);
+const query_id = req.query.id;
 
-//Exclusively for Restcomm 
+console.log("The query_key is "+query_userkey);
+／／console.log(query_id);
+
+if(query_id!=undefined){
+    Event.findByIdAndRemove(query_id, function(err, event){
+        if(err){
+            return res.json({success:false,msg:'Failed to delete'});
+        }
+        return res.json({success:true, msg:'success'});
+    });
+
+} else{
+
 if(query_headerkey!=undefined){
     Event.find({username:query_userkey, headerkey:query_headerkey},(err,event)=>{
     if(err)
@@ -85,17 +97,7 @@ if(query_headerkey!=undefined){
             throw err;
         }
     console.log("The event of user with the headerkey is "+event);
-    //var output=new Array();
-    var output="";
-    for(var i=0; i< event.length;i++){
-        var x=""+(i+1);
-        var str1=x.concat("."," ",event[i].event,"        ");
-        output=output.concat(str1);
-    //output.push(event[i].event);
-    }
- 
-    return res.json({list:output});
-    //return res.json({list:event}) 
+    return res.json({list:event}) 
     });
 }
 else{
@@ -107,6 +109,7 @@ else{
     console.log("All events of the user are "+event);
     return res.json({list:event}) 
     });
+}
 }
 //  Event.getEventByUsername(query_key,(err,event)=>{
 //       if(err) {
@@ -145,6 +148,10 @@ username:req.body.username
 });
 
 
+// Delete Event
+
+
+
 //headers to get and to submit
 router.get('/headers',function(req,res,next){
     const query_userkey=req.query.username;
@@ -181,30 +188,6 @@ router.post('/headers', function(req,res,next){
 })
 
 
-function randomMethod(user){
-Header.find({username:user},function(err,headerobj){
-    if(err){
-
-        throw err;
-    }
-    else{
-        const allheaderlist=headerobj[0].allheaders;
-        var finalObj=Object;
-        for(var i=0;i<allheaderlist.length;i++){
-            var header=allheaderlist[i];
-            var list0= Event.find({username:user,headerkey:header});
-            var output="";
-            for(var j=0;j<list0.length;j++){
-                var num=""+(j+1);
-                var str1=x.concat("."," ",list0[j].event,"     ");
-                output=output.concat(str1);
-            }
-            finalObj[header]=output;
-        }
-}
-        
-    });
-}
 
 
 module.exports=router;
