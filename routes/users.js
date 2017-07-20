@@ -78,7 +78,7 @@ const query_headerkey=req.query.headerkey;
 const query_id = req.query.id;
 
 console.log("The query_key is "+query_userkey);
-／／console.log(query_id);
+//console.log(query_id);
 
 if(query_id!=undefined){
     Event.findByIdAndRemove(query_id, function(err, event){
