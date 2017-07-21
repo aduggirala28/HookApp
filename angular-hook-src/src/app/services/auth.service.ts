@@ -40,7 +40,6 @@ export class AuthService {
   }
 
   deleteEvent(id){
-
     this.loadToken();
     let headers = new Headers();
     headers.append('Authorization', this.authToken);
@@ -131,5 +130,20 @@ export class AuthService {
     headers.append('Content-Type','application/json');
     return this.http.get('http://localhost:3000/users/headers?username='+username,{headers:headers})
     .map(res=>res.json());
+  }
+
+  deleteHeader(head){
+    this.loadToken();
+    const header_update = {
+      username: JSON.parse(this.user).username,
+      allheaders: head
+    }
+    let headers = new Headers();
+    headers.append('Authorization', this.authToken);
+    headers.append('Content-Type','application/json');
+    console.log(head);
+    return this.http.post('http://localhost:3000/users/headers',header_update,{headers:headers})
+            .map(res => res.json());
+
   }
 }

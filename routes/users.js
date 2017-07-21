@@ -148,31 +148,50 @@ username:req.body.username
 });
 
 
-// Delete Event
-
-
-
 //headers to get and to submit
 router.get('/headers',function(req,res,next){
+
+
+    //const query_head=req.query.allheaders;
+
+    //console.log("header:",query_head);
     const query_userkey=req.query.username;
-    Header.findOne({username:query_userkey},(err,headerlist)=>{
-        if(err) {
-            console.log("Error in finding the allheader list");
-            res.json({});
-        }
-        else{
-            res.json(headerlist);
-        }
-    })
+    //console.log(query_userkey);
+   
+        Header.findOne({username:query_userkey},(err,headerlist)=>{
+            if(err) {
+                console.log("Error in finding the allheader list");
+                res.json({});
+            }
+            else{
+                res.json(headerlist);
+            }
+        })
+    
 })
 
 
 
 
 router.post('/headers', function(req,res,next){
+
+    const user = req.body.username;
+    const head = req.body.allheaders
+
+    if(head!=undefined){
+        Header.update({username:user},{$set:{allheaders:head}}, function(err, headerlist){
+        if(err){
+            return res.json({success:false,msg:'Failed to delete'});
+        }
+        else return res.json({success:true,msg:'deleted'});
+        });
+
+    } else {
+
+
     const header= new Header({
-        username:req.body.username,
-        allheaders:req.body.allheaders
+        username:user,
+        allheaders:head
     });
     
     Header.addHeader(header,(err,header)=>{
@@ -185,6 +204,7 @@ router.post('/headers', function(req,res,next){
         }
 
     });
+    }
 })
 
 
