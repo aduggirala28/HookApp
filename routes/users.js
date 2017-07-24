@@ -90,7 +90,7 @@ if(query_id!=undefined){
 
 } else{
 
-if(query_headerkey!=undefined){
+if(query_headerkey!=undefined && query_userkey!= undefined){
     Event.find({username:query_userkey, headerkey:query_headerkey},(err,event)=>{
     if(err)
     {
@@ -100,7 +100,16 @@ if(query_headerkey!=undefined){
     return res.json({list:event}) 
     });
 }
-else{
+else if(query_headerkey!=undefined && query_userkey==undefined){
+// delete event 
+    Event.remove({headerkey:query_headerkey},function(err, event){
+        if(err){
+            return res.json({success:false,msg:'Failed to delete'});
+        }
+        return res.json({success:true, msg:'success'});
+    });
+
+} else{
     Event.find({username:query_userkey},(err,event)=>{
     if(err)
     {
@@ -128,11 +137,11 @@ else{
 
 //eventlister
 router.post('/eventlister',passport.authenticate('jwt',{session:false}),function(req,res,next){
-const event= new Event({
-headerkey:req.body.headerkey,
-event:req.body.event,
-username:req.body.username
-});
+    const event= new Event({
+        headerkey:req.body.headerkey,
+        event:req.body.event,
+        username:req.body.username
+    });
 // Event.create(event,function (err, data) {
 //    if (err) return handleError(err)});
 
@@ -187,27 +196,21 @@ router.post('/headers', function(req,res,next){
         });
 
     } else {
+        const header= new Header({
+            username:user,
+            allheaders:head
+        });        
+        Header.addHeader(header,(err,header)=>{
+            if(err){
+            res.json({success:false, msg:'Failed header addition'});
+            }
+            else{
+                console.log('added headers  '+header);
+                res.json({success:true,msg:'Headers added'});
+            }
 
-
-    const header= new Header({
-        username:user,
-        allheaders:head
-    });
-    
-    Header.addHeader(header,(err,header)=>{
-        if(err){
-        res.json({success:false, msg:'Failed header addition'});
-        }
-        else{
-            console.log('added headers  '+header);
-            res.json({success:true,msg:'Headers added'});
-        }
-
-    });
+        });
     }
 })
-
-
-
 
 module.exports=router;

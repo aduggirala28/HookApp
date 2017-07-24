@@ -146,4 +146,14 @@ export class AuthService {
             .map(res => res.json());
 
   }
+
+  deleteHeaderAndEvents(header_delete){
+    this.loadToken();
+    let headers = new Headers();
+    headers.append('Authorization', this.authToken);
+    headers.append('Content-Type','application/json');
+    return this.http.get('http://localhost:3000/users/eventlister?headerkey='+header_delete,{headers:headers})
+            .map(res => res.json());
+
+  }
 }
