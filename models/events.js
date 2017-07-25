@@ -9,14 +9,21 @@ headerkey: {
 },
 
 event:{
-    type:String,
-    required:true
+    linkdetail:{
+        type:String,
+        required:true
+        },
+    stringval:{
+        type:String,
+        required:true
+    }
 },
 
 username:{
     type: String,
     required:true
 }
+
 });
 
 const Event= module.exports=mongoose.model('Event',EventSchema);

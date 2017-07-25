@@ -3,20 +3,21 @@
   "version": "0.0.0",
   "private": true,
   "main": "server.js",
-  "scripts":{
-    "test":"echo \"Error: no test specified\" && exit 1",
-    "start":"node server"
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server"
   },
   "dependencies": {
+    "bcryptjs": "*",
     "body-parser": "~1.8.1",
+    "cors": "^2.8.3",
     "express": "latest",
+    "jsonwebtoken": "*",
     "mongoose": "^4.10.8",
     "node-restful": "latest",
     "nodemon": "latest",
-    "cors":"^2.8.3",
-    "bcryptjs":"*",
-    "jsonwebtoken":"*",
-    "passport":"*",
-    "passport-jwt":"*"
+    "passport": "*",
+    "passport-jwt": "*",
+    "request": "^2.81.0"
   }
 }

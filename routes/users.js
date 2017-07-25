@@ -5,7 +5,8 @@ const Event=require('../models/events');
 const Header=require('../models/headers');
 const passport=require('passport');
 const jwt=require('jsonwebtoken');
-const config=require('../config/database')
+const config=require('../config/database');
+const request=require('request');
 
 
 //register 
@@ -74,74 +75,88 @@ res.json({user : req.user});
 //eventlister get method -- get all the list of events related to a username. or of a username with a particular headerkey.
 router.get('/eventlister', passport.authenticate('jwt',{session:false}),function(req,res,next){
 const query_userkey=req.query.username;
-const query_headerkey=req.query.headerkey;
+const query_allsubmit=req.query.allsubmit;
 console.log("The query_key is "+query_userkey);
-
+console.log(query_allsubmit);
 //Exclusively for Restcomm 
-if(query_headerkey!=undefined){
-    Event.find({username:query_userkey, headerkey:query_headerkey},(err,event)=>{
-    if(err)
-    {
-            throw err;
-        }
-    console.log("The event of user with the headerkey is "+event);
-    //var output=new Array();
-    var output="";
-    for(var i=0; i< event.length;i++){
-        var x=""+(i+1);
-        var str1=x.concat("."," ",event[i].event,"        ");
-        output=output.concat(str1);
-    //output.push(event[i].event);
-    }
- 
-    return res.json({list:output});
-    //return res.json({list:event}) 
-    });
-}
-else{
+
     Event.find({username:query_userkey},(err,event)=>{
     if(err)
     {
             throw err;
+            console.log("NO EVENTS WERE FOUND");
         }
-    console.log("All events of the user are "+event);
+    console.log("All events of the user are "+event); 
     return res.json({list:event}) 
     });
-}
-//  Event.getEventByUsername(query_key,(err,event)=>{
-//       if(err) {
-//           throw err;
-//       }
-//       if(!event){
-//           return res.json({success:false, msg:"No events Found for the user "+query_key});
-//      }
-//      else{
-//           console.log(event);
-//          return res.json({list:event})
-//      }
-// }); 
 });
 
 
-//eventlister
+//eventlister ---- need to Add post to backend API as well
 router.post('/eventlister',passport.authenticate('jwt',{session:false}),function(req,res,next){
-const event= new Event({
-headerkey:req.body.headerkey,
-event:req.body.event,
-username:req.body.username
-});
-// Event.create(event,function (err, data) {
-//    if (err) return handleError(err)});
+const query_userkey=req.query.username;
+console.log("Username from allSubmti event"+query_userkey);
+if(query_userkey!=undefined){
 
-  Event.addEvent(event,(err,event)=>{
-        if(err){
-        res.json({success:false, msg:'Failed event addition'});
+    Header.find({username:query_userkey},function(err,headerobj){
+    if(err){
+        throw err;
+        console.log("Could not find the User's Headerlist");
+    }
+    else{
+        const allheaderlist=headerobj[0].allheaders;
+        var finalObj=Object;
+        for(var i=0;i<allheaderlist.length;i++){
+            var header=allheaderlist[i];
+            var list0= Event.find({username:user,headerkey:header});
+            var output="";
+            for(var j=0;j<list0.length;j++){
+                var num=""+(j+1);
+                var str1=x.concat("."," ",list0[j].event,"     ");
+                output=output.concat(str1);
+            }
+            finalObj[header]=output;
         }
-        else{
-            res.json({success:true,msg:'Event added'});
-        }
+        var options = {
+            uri: 'localhost:3200/events',
+            method: 'POST',
+            json: {
+                 "username":query_userkey,
+                 "list": finalObj
+                }
+            };
 
+         request(options, function (error, response, body) {
+            if (!error && response.statusCode == 200) {
+                console.log(body.id) // Print the shortened url.
+            }
+            });
+    }
+        
     });
+
+
+}
+
+else {
+    const event= new Event({
+    headerkey:req.body.headerkey,
+    event:req.body.event,
+    username:req.body.username
+    });
+    // Event.create(event,function (err, data) {
+    //    if (err) return handleError(err)});
+
+    Event.addEvent(event,(err,event)=>{
+            if(err){
+            res.json({success:false, msg:'Failed event addition'});
+            }
+            else{
+                res.json({success:true,msg:'Event added'});
+            }
+
+        });
+}
 });
 
 
