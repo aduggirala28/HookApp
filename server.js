@@ -9,8 +9,8 @@ const express = require('express'),
                 replset: { socketOptions: { keepAlive: 300000, connectTimeoutMS : 30000 } } };
 
 
-const port=3000;
-//const port = process.env.PORT||8080;
+//const port=3000;
+const port = process.env.PORT||8080;
 
 //User 
 const users=require('./routes/users');
